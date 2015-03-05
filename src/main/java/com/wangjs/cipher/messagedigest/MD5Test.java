@@ -9,6 +9,12 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
+/**
+ * MD5 取摘要 (Digest).
+ * 用途: 验证信息完整性(加在原始信息后面)
+ * 数字证书
+ * 类似的算法: MD2, SHA1, SHA-256
+ */
 public class MD5Test {
 	public static final String FILENAME = "doc/数字签名.pdf";
 	
