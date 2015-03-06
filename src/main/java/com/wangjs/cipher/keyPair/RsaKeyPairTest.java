@@ -1,11 +1,13 @@
 package com.wangjs.cipher.keyPair;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
@@ -13,6 +15,10 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
+import org.apache.commons.codec.binary.Base64;
+
+import com.wangjs.cipher.keystore.KeyStoreTest;
 
 /**
  * 公私钥加密，有一对密钥，私钥自己保留，公钥给对方系统。
@@ -26,21 +32,26 @@ import javax.crypto.NoSuchPaddingException;
 public class RsaKeyPairTest {
 	public static final String PLAIN_TEXT= "这个是明文测试字符串";
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		rsaByJdk();
 	}
 	
-	public static void rsaByJdk(){
+	public static void rsaByJdk() throws UnrecoverableKeyException, KeyStoreException, CertificateException, IOException{
 		try {
-			KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
-			KeyPair keyPair = gen.generateKeyPair();
-			RSAPrivateKey priKey = (RSAPrivateKey)keyPair.getPrivate();
-			RSAPublicKey pubKey = (RSAPublicKey)keyPair.getPublic();
+//			KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
+//			KeyPair keyPair = gen.generateKeyPair();
+//			RSAPrivateKey priKey = (RSAPrivateKey)keyPair.getPrivate();
+//			RSAPublicKey pubKey = (RSAPublicKey)keyPair.getPublic();
+			
+			RSAPrivateKey priKey = KeyStoreTest.getPrivateKey();
+			RSAPublicKey pubKey = KeyStoreTest.getPublicKey();
+
 			
 			Cipher c = Cipher.getInstance("RSA");
 			c.init(Cipher.ENCRYPT_MODE, pubKey);
 			byte[] cipherBytes = c.doFinal(PLAIN_TEXT.getBytes());
 			System.out.println("cipherBytes ="+new String(cipherBytes));
+			System.out.println("cipherString(Base64) = "+Base64.encodeBase64String(cipherBytes));
 			
 			Cipher d = Cipher.getInstance("RSA");
 			d.init(Cipher.DECRYPT_MODE, priKey);
